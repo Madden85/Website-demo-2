@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Data Customer - Mini Website Seller</title>
+  <style>
+    :root {
+      --primary: #16a34a;
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { width: min(1100px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0 70px; }
+    .hero {
+      background: linear-gradient(135deg, #ffffff, #ecfdf5);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 18px 45px rgba(15,23,42,.07);
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 6vw, 48px); letter-spacing: -0.05em; }
+    h2 { margin: 0 0 14px; font-size: 22px; letter-spacing: -0.03em; }
+    p { color: var(--muted); margin: 0 0 14px; }
+    .grid { display: grid; gap: 16px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 10px 28px rgba(15,23,42,.05);
+    }
+    label { display: block; font-weight: 800; margin-bottom: 6px; font-size: 13px; color: #374151; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(22,163,74,.10); }
+    textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; }
+    .row { display: grid; gap: 12px; margin-bottom: 12px; }
+    .two { grid-template-columns: 1fr; }
+    .three { grid-template-columns: 1fr; }
+    .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    button, .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button.secondary, .btn.secondary { background: #111827; }
+    button.ghost, .btn.ghost { background: white; color: #111827; border: 1px solid var(--line); }
+    .note {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 16px;
+      padding: 14px;
+      color: #92400e;
+      font-weight: 700;
+      margin: 14px 0 0;
+    }
+    .success {
+      display: none;
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+      font-weight: 800;
+    }
+    .small { font-size: 12px; color: var(--muted); }
+    .footer-actions {
+      position: sticky;
+      bottom: 0;
+      background: rgba(246,247,251,.86);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+      margin-top: 18px;
+    }
+    @media (min-width: 760px) {
+      .grid { grid-template-columns: 1fr 1fr; align-items: start; }
+      .two { grid-template-columns: 1fr 1fr; }
+      .three { grid-template-columns: 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Panel Edit Manual</h1>
+      <p>Page ini untuk mudahkan kau edit data customer. Isi maklumat, tekan <strong>Download app2.js</strong>, kemudian replace file app2.js lama dalam folder website.</p>
+      <div class="note">Nota: Browser tak boleh save terus ke file asal. Sebab tu page ini akan generate file <strong>app2.js</strong> baru untuk kau download.</div>
+      <div class="btns">
+        <a class="btn ghost" href="index.html" target="_blank">Buka Preview Website</a>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Maklumat Bisnes</h2>
+        <div class="row two">
+          <div><label>Nama Bisnes</label><input id="businessName" /></div>
+          <div><label>Logo Text</label><input id="logoText" placeholder="Contoh: WKA" /></div>
+        </div>
+        <div class="row"><label>Tagline</label><input id="tagline" /></div>
+        <div class="row"><label>Ayat Penerangan Ringkas</label><textarea id="shortDescription"></textarea></div>
+        <div class="row two">
+          <div><label>Nombor WhatsApp</label><input id="whatsapp" placeholder="60123456789" /></div>
+          <div><label>Lokasi</label><input id="location" /></div>
+        </div>
+        <div class="row two">
+          <div><label>Waktu Operasi</label><input id="operatingHours" /></div>
+          <div><label>Area Delivery</label><input id="deliveryArea" /></div>
+        </div>
+        <div class="row"><label>Gambar Utama / Banner URL</label><input id="heroImage" placeholder="https://..." /></div>
+      </section>
+
+      <section class="card">
+        <h2>2. Warna Tema</h2>
+        <div class="row two">
+          <div><label>Primary Color</label><input id="primaryColor" type="color" /></div>
+          <div><label>Secondary Color</label><input id="secondaryColor" type="color" /></div>
+        </div>
+        <div class="row two">
+          <div><label>Background Color</label><input id="backgroundColor" type="color" /></div>
+          <div><label>Card Color</label><input id="cardColor" type="color" /></div>
+        </div>
+        <div class="row two">
+          <div><label>Text Color</label><input id="textColor" type="color" /></div>
+          <div><label>Button Text Color</label><input id="buttonTextColor" type="color" /></div>
+        </div>
+        <p class="small">Kalau customer tak minta warna tertentu, biarkan default.</p>
+      </section>
+
+      <section class="card">
+        <h2>3. Promo</h2>
+        <div class="row">
+          <label>Promo Active</label>
+          <select id="promoActive"><option value="true">ON</option><option value="false">OFF</option></select>
+        </div>
+        <div class="row two">
+          <div><label>Badge Promo</label><input id="promoBadge" /></div>
+          <div><label>Button Promo</label><input id="promoButtonText" /></div>
+        </div>
+        <div class="row"><label>Tajuk Promo</label><input id="promoTitle" /></div>
+        <div class="row"><label>Ayat Promo</label><textarea id="promoText"></textarea></div>
+      </section>
+
+      <section class="card">
+        <h2>4. Link Social Media</h2>
+        <div class="row"><label>TikTok</label><input id="tiktok" /></div>
+        <div class="row"><label>Instagram</label><input id="instagram" /></div>
+        <div class="row"><label>Facebook</label><input id="facebook" /></div>
+        <div class="row"><label>Shopee / Link Lain</label><input id="shopee" /></div>
+      </section>
+
+      <section class="card">
+        <h2>5. Produk / Harga</h2>
+        <p>Isi dalam format JSON. Cara paling senang: copy satu block produk, paste bawah, tukar nama/harga/gambar.</p>
+        <textarea id="productsJson"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>6. Testimoni & FAQ</h2>
+        <label>Testimoni JSON</label>
+        <textarea id="testimonialsJson"></textarea>
+        <label style="margin-top:12px;">FAQ JSON</label>
+        <textarea id="faqJson"></textarea>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>7. Mesej WhatsApp</h2>
+      <div class="row"><label>General Order Message</label><textarea id="generalMessage"></textarea></div>
+      <div class="row"><label>Product Prefix</label><input id="productPrefix" /></div>
+      <div class="success" id="successBox">app2.js berjaya generate. Guna file baru itu untuk replace app2.js lama.</div>
+    </section>
+  </div>
+
+  <div class="footer-actions">
+    <div class="wrap" style="padding:0;">
+      <div class="btns" style="margin:0;">
+        <button onclick="downloadApp2()">Download app2.js</button>
+        <button class="secondary" onclick="copyApp2()">Copy Code app2.js</button>
+        <a class="btn ghost" href="index.html" target="_blank">Preview Website</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app2.js"></script>
+  <script>
+    const DATA = window.SITE_DATA || {};
+
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = value ?? "";
+    }
+
+    function getValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    }
+
+    function loadData() {
+      const b = DATA.business || {};
+      const t = DATA.theme || {};
+      const p = DATA.promo || {};
+      const s = DATA.social || {};
+      const o = DATA.orderMessage || {};
+
+      setValue("businessName", b.name);
+      setValue("logoText", b.logoText);
+      setValue("tagline", b.tagline);
+      setValue("shortDescription", b.shortDescription);
+      setValue("whatsapp", b.whatsapp);
+      setValue("location", b.location);
+      setValue("operatingHours", b.operatingHours);
+      setValue("deliveryArea", b.deliveryArea);
+      setValue("heroImage", b.heroImage);
+
+      setValue("primaryColor", t.primaryColor || "#16a34a");
+      setValue("secondaryColor", t.secondaryColor || "#f97316");
+      setValue("backgroundColor", t.backgroundColor || "#fffaf2");
+      setValue("cardColor", t.cardColor || "#ffffff");
+      setValue("textColor", t.textColor || "#1f2937");
+      setValue("buttonTextColor", t.buttonTextColor || "#ffffff");
+
+      setValue("promoActive", String(p.active !== false));
+      setValue("promoBadge", p.badge);
+      setValue("promoTitle", p.title);
+      setValue("promoText", p.text);
+      setValue("promoButtonText", p.buttonText);
+
+      setValue("tiktok", s.tiktok);
+      setValue("instagram", s.instagram);
+      setValue("facebook", s.facebook);
+      setValue("shopee", s.shopee);
+
+      setValue("productsJson", JSON.stringify(DATA.products || [], null, 2));
+      setValue("testimonialsJson", JSON.stringify(DATA.testimonials || [], null, 2));
+      setValue("faqJson", JSON.stringify(DATA.faq || [], null, 2));
+      setValue("generalMessage", o.general);
+      setValue("productPrefix", o.productPrefix);
+    }
+
+    function readJson(id, fallback) {
+      try {
+        return JSON.parse(getValue(id) || JSON.stringify(fallback));
+      } catch (err) {
+        alert(`Format JSON salah di ${id}. Sila check koma, bracket atau tanda quote.`);
+        throw err;
+      }
+    }
+
+    function buildData() {
+      return {
+        business: {
+          name: getValue("businessName"),
+          tagline: getValue("tagline"),
+          shortDescription: getValue("shortDescription"),
+          logoText: getValue("logoText"),
+          whatsapp: getValue("whatsapp"),
+          location: getValue("location"),
+          operatingHours: getValue("operatingHours"),
+          deliveryArea: getValue("deliveryArea"),
+          heroImage: getValue("heroImage")
+        },
+        theme: {
+          primaryColor: getValue("primaryColor"),
+          secondaryColor: getValue("secondaryColor"),
+          backgroundColor: getValue("backgroundColor"),
+          cardColor: getValue("cardColor"),
+          textColor: getValue("textColor"),
+          buttonTextColor: getValue("buttonTextColor")
+        },
+        promo: {
+          active: getValue("promoActive") === "true",
+          badge: getValue("promoBadge"),
+          title: getValue("promoTitle"),
+          text: getValue("promoText"),
+          buttonText: getValue("promoButtonText")
+        },
+        social: {
+          tiktok: getValue("tiktok"),
+          instagram: getValue("instagram"),
+          facebook: getValue("facebook"),
+          shopee: getValue("shopee")
+        },
+        products: readJson("productsJson", []),
+        testimonials: readJson("testimonialsJson", []),
+        faq: readJson("faqJson", []),
+        orderMessage: {
+          general: getValue("generalMessage"),
+          productPrefix: getValue("productPrefix")
+        }
+      };
+    }
+
+    function generateApp2Code() {
+      const data = buildData();
+      return `/* =========================================================\n   APP2.JS — TEMPAT EDIT INFO CUSTOMER\n   File ini digenerate dari index2.html.\n========================================================= */\n\nwindow.SITE_DATA = ${JSON.stringify(data, null, 2)};\n`;
+    }
+
+    function downloadApp2() {
+      const code = generateApp2Code();
+      const blob = new Blob([code], { type: "text/javascript" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "app2.js";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showSuccess();
+    }
+
+    async function copyApp2() {
+      const code = generateApp2Code();
+      try {
+        await navigator.clipboard.writeText(code);
+        showSuccess("Code app2.js sudah copy. Paste ke file app2.js lama.");
+      } catch (err) {
+        alert("Tak boleh auto-copy. Sila guna Download app2.js.");
+      }
+    }
+
+    function showSuccess(text) {
+      const box = document.getElementById("successBox");
+      box.textContent = text || "app2.js berjaya generate. Guna file baru itu untuk replace app2.js lama.";
+      box.style.display = "block";
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

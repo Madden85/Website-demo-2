@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Website Seller Demo</title>
+  <meta name="description" content="Mini website seller dengan produk, harga, promo dan button WhatsApp order." />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    :root {
+      --primary: #16a34a;
+      --secondary: #f97316;
+      --bg: #fffaf2;
+      --card: #ffffff;
+      --text: #1f2937;
+      --button-text: #ffffff;
+      --muted: #6b7280;
+      --line: rgba(31, 41, 55, .12);
+      --shadow: 0 18px 50px rgba(15, 23, 42, .10);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--bg) 88%, white 12%);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      color: var(--button-text);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      font-weight: 900;
+      box-shadow: 0 10px 30px color-mix(in srgb, var(--primary) 30%, transparent 70%);
+      flex: 0 0 auto;
+    }
+    .brand > div { min-width: 0; overflow: hidden; }
+    .brand h1 { font-size: 16px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand p { font-size: 12px; margin: 0; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+    .nav-links { display: none; gap: 18px; font-size: 14px; font-weight: 700; color: var(--muted); }
+    .nav-links a:hover { color: var(--primary); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: var(--primary);
+      color: var(--button-text);
+      font-weight: 800;
+      box-shadow: 0 12px 26px color-mix(in srgb, var(--primary) 25%, transparent 75%);
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 34px color-mix(in srgb, var(--primary) 30%, transparent 70%); }
+    .btn.secondary { background: var(--secondary); box-shadow: 0 12px 26px color-mix(in srgb, var(--secondary) 22%, transparent 78%); }
+    .btn.ghost { background: var(--card); color: var(--text); box-shadow: none; border: 1px solid var(--line); }
+    .btn.disabled { pointer-events: none; opacity: .55; filter: grayscale(.5); }
+    #navWhatsapp {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      line-height: 1;
+      padding: 10px 14px;
+      font-size: 14px;
+      max-width: 112px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero { padding: 34px 0 22px; overflow: hidden; }
+    .hero-grid { display: grid; gap: 24px; align-items: center; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: color-mix(in srgb, var(--primary) 78%, black 22%);
+      background: color-mix(in srgb, var(--primary) 12%, white 88%);
+      border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent 78%);
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    .hero h2 { font-size: clamp(34px, 9vw, 68px); line-height: .98; margin: 0 0 14px; letter-spacing: -0.055em; }
+    .hero p { font-size: 16px; color: var(--muted); margin: 0 0 22px; max-width: 650px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .hero-card {
+      position: relative;
+      border-radius: 34px;
+      overflow: hidden;
+      min-height: 360px;
+      box-shadow: var(--shadow);
+      background: var(--card);
+      isolation: isolate;
+    }
+    .hero-card img { width: 100%; height: 420px; object-fit: cover; }
+    .hero-card::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.58), rgba(0,0,0,.06) 58%, rgba(0,0,0,0));
+      z-index: 1;
+    }
+    .hero-info {
+      position: absolute; left: 18px; right: 18px; bottom: 18px; z-index: 2;
+      padding: 18px;
+      border-radius: 24px;
+      color: white;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(18px);
+    }
+    .hero-info strong { display: block; font-size: 18px; margin-bottom: 4px; }
+    .hero-info span { display: block; font-size: 13px; opacity: .9; }
+
+    .section { padding: 28px 0; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .section h3 { font-size: clamp(24px, 5vw, 40px); margin: 0; letter-spacing: -0.04em; }
+    .section-head p { color: var(--muted); margin: 6px 0 0; }
+
+    .promo-card {
+      display: grid;
+      gap: 18px;
+      align-items: center;
+      border-radius: var(--radius);
+      padding: 24px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 14%, white 86%), color-mix(in srgb, var(--secondary) 18%, white 82%));
+      border: 1px solid color-mix(in srgb, var(--secondary) 24%, transparent 76%);
+      box-shadow: var(--shadow);
+    }
+    .promo-card .label { font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: color-mix(in srgb, var(--secondary) 76%, black 24%); }
+    .promo-card h3 { margin: 4px 0 8px; }
+    .promo-card p { margin: 0; color: var(--muted); max-width: 780px; }
+
+    .filters { display: flex; gap: 10px; overflow-x: auto; padding: 0 0 12px; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      white-space: nowrap;
+      padding: 10px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .filter-btn.active { background: var(--primary); color: var(--button-text); border-color: var(--primary); }
+
+    .product-grid { display: grid; gap: 16px; }
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 12px 35px rgba(15,23,42,.07);
+      display: grid;
+    }
+    .product-img-wrap { position: relative; height: 220px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 12%, white), color-mix(in srgb, var(--secondary) 12%, white)); }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+    .product-card:hover img { transform: scale(1.04); }
+    .product-badge {
+      position: absolute; top: 12px; left: 12px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--secondary);
+      color: var(--button-text);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .sold-out {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.48);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 950;
+      font-size: 22px;
+      letter-spacing: .04em;
+    }
+    .product-body { padding: 18px; display: grid; gap: 12px; }
+    .product-top { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .product-card h4 { margin: 0; font-size: 19px; letter-spacing: -0.02em; }
+    .category { color: var(--primary); font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+    .price { text-align: right; font-weight: 950; color: var(--secondary); font-size: 18px; white-space: nowrap; }
+    .old-price { display: block; color: var(--muted); text-decoration: line-through; font-size: 12px; font-weight: 700; }
+    .product-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .product-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .product-actions .btn { flex: 1; min-width: 150px; padding: 11px 14px; }
+
+    .info-grid { display: grid; gap: 14px; }
+    .info-card, .testi-card, .faq-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(15,23,42,.06);
+    }
+    .info-card .icon { font-size: 26px; margin-bottom: 10px; }
+    .info-card strong { display: block; font-size: 17px; margin-bottom: 5px; }
+    .info-card span, .testi-card p, .faq-card p { color: var(--muted); margin: 0; }
+    .testi-grid { display: grid; gap: 14px; }
+    .testi-card p { font-style: italic; margin-bottom: 12px; }
+    .testi-card strong { color: var(--primary); }
+    .faq-list { display: grid; gap: 12px; }
+    .faq-card strong { display: block; margin-bottom: 5px; }
+
+    .footer {
+      padding: 38px 0 90px;
+      margin-top: 24px;
+      background: color-mix(in srgb, var(--primary) 8%, transparent 92%);
+      border-top: 1px solid var(--line);
+    }
+    .footer-grid { display: grid; gap: 20px; align-items: center; }
+    .socials { display: flex; flex-wrap: wrap; gap: 10px; }
+    .socials a {
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .floating-wa {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 80;
+      display: flex;
+    }
+    .floating-wa .btn { width: 100%; padding: 15px 18px; }
+
+    .empty { color: var(--muted); padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius); background: var(--card); }
+
+
+    @media (max-width: 480px) {
+      .container { width: min(1120px, calc(100% - 24px)); }
+      .nav { gap: 8px; padding: 10px 0; }
+      .brand { flex: 1 1 auto; gap: 8px; overflow: hidden; }
+      .logo { width: 40px; height: 40px; border-radius: 14px; font-size: 14px; }
+      .brand h1 { font-size: 15px; max-width: 150px; }
+      .brand p { font-size: 11px; max-width: 145px; }
+      #navWhatsapp { padding: 9px 12px; font-size: 13px; max-width: 96px; }
+    }
+
+    @media (max-width: 360px) {
+      .brand p { display: none; }
+      .brand h1 { max-width: 150px; }
+      #navWhatsapp { padding: 8px 10px; font-size: 12px; max-width: 82px; }
+    }
+    @media (min-width: 720px) {
+      .nav-links { display: flex; }
+      .brand p { max-width: 320px; }
+      .hero { padding: 54px 0 34px; }
+      .hero-grid { grid-template-columns: 1fr .86fr; gap: 34px; }
+      .promo-card { grid-template-columns: 1fr auto; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .info-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .testi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .footer-grid { grid-template-columns: 1fr auto; }
+      .floating-wa { left: auto; right: 24px; width: auto; }
+    }
+
+    @media (min-width: 1000px) {
+      .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Pergi ke atas">
+        <div class="logo" id="logoText">MW</div>
+        <div>
+          <h1 id="navBusinessName">Mini Website Seller</h1>
+          <p id="navTagline">Produk, harga & WhatsApp order</p>
+        </div>
+      </a>
+      <nav class="nav-links" aria-label="Menu utama">
+        <a href="#produk">Produk</a>
+        <a href="#info">Info</a>
+        <a href="#testimoni">Testimoni</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn" id="navWhatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="badge" id="heroBadge">🔥 Promo Hari Ini</div>
+          <h2 id="heroTitle">Mini website untuk seller</h2>
+          <p id="heroDesc">Customer boleh tengok produk, harga, promo dan terus WhatsApp untuk order.</p>
+          <div class="hero-actions">
+            <a class="btn" id="heroWhatsapp" href="#" target="_blank" rel="noopener">Order Sekarang</a>
+            <a class="btn ghost" href="#produk">Lihat Produk</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <img id="heroImage" src="" alt="Gambar utama bisnes" loading="eager" />
+          <div class="hero-info">
+            <strong id="heroInfoName">Nama Bisnes</strong>
+            <span id="heroInfoMeta">Lokasi • Waktu operasi</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="promoSection">
+      <div class="container">
+        <div class="promo-card">
+          <div>
+            <div class="label" id="promoBadge">Promo</div>
+            <h3 id="promoTitle">Promo terkini</h3>
+            <p id="promoText">Ayat promo akan keluar di sini.</p>
+          </div>
+          <a class="btn secondary" id="promoWhatsapp" href="#" target="_blank" rel="noopener">Order Promo</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="produk">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h3>Produk / Menu</h3>
+            <p>Pilih item dan tekan WhatsApp untuk order.</p>
+          </div>
+        </div>
+        <div class="filters" id="categoryFilters" aria-label="Filter kategori"></div>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="info">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h3>Info Bisnes</h3>
+            <p>Maklumat penting untuk customer sebelum order.</p>
+          </div>
+        </div>
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="testimoni">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h3>Testimoni</h3>
+            <p>Review ringkas daripada customer.</p>
+          </div>
+        </div>
+        <div class="testi-grid" id="testimonialGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h3>Soalan Lazim</h3>
+            <p>Jawapan ringkas untuk soalan yang selalu ditanya.</p>
+          </div>
+        </div>
+        <div class="faq-list" id="faqList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand">
+          <div class="logo" id="footerLogoText">MW</div>
+          <div>
+            <h1 id="footerBusinessName">Mini Website Seller</h1>
+            <p id="footerTagline">Produk, harga & WhatsApp order</p>
+          </div>
+        </div>
+      </div>
+      <div class="socials" id="socialLinks"></div>
+    </div>
+  </footer>
+
+  <div class="floating-wa">
+    <a class="btn" id="floatingWhatsapp" href="#" target="_blank" rel="noopener">💬 WhatsApp Order</a>
+  </div>
+
+  <script src="app2.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
